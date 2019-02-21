@@ -41,8 +41,8 @@ $inf_mlt[] = [
 $settings = [
     'limit'   => 5,
     'days'    => 90,
-    'control' => 1,
-    'jq'      => 0
+    'control' => 0,
+    'bubble'  => 1
 ];
 
 foreach ($settings as $name => $value) {

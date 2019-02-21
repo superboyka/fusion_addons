@@ -26,6 +26,9 @@ class PmControlAdmin {
         require_once INCLUDES."infusions_include.php";
         self::$locale = fusion_get_locale("", PMC_LOCALE);
         $this->pmsettings = get_settings("pm_control_panel");
+
+        $rowstart = filter_input(INPUT_GET, 'rowstart', FILTER_DEFAULT);
+        $this->rowstart = (isset($rowstart) ? $rowstart : 0);
     }
 
     public static function getInstance() {
@@ -50,18 +53,21 @@ class PmControlAdmin {
         ];
 
         $delete_message_id = filter_input(INPUT_GET, 'delete_message_id', FILTER_VALIDATE_INT);
+        $delete_all = filter_input(INPUT_POST, 'delete_all', FILTER_DEFAULT);
         opentable(self::$locale['PMC_053']);
         echo opentab($pm_tab, $section, 'pm_messages', TRUE, '', 'section', ['rowstart']);
         switch ($section) {
             case 'pm_count':
-                self::pm_count();
+                $this->PmCount();
                 break;
             case 'settings':
-                self::PmSettings();
+                $this->PmSettings();
                 break;
             default:
                 if (!empty($delete_message_id)) {
                     $this->DelMessages($delete_message_id);
+                } else if (!empty($delete_all)) {
+                    $this->DelAllMessages();
                 }
                 $this->PmMessages();
                 break;
@@ -95,7 +101,7 @@ class PmControlAdmin {
             'ext_tip'     => self::$locale['PMC_057']
         ]);
 
-        echo form_checkbox('jq', self::$locale['PMC_058'], $this->pmsettings['jq'], [
+        echo form_checkbox('bubble', self::$locale['PMC_058'], $this->pmsettings['bubble'], [
             'inline'  => TRUE,
             'ext_tip' => self::$locale['PMC_059']
         ]);
@@ -106,11 +112,11 @@ class PmControlAdmin {
     }
 
     private static function PmSaveSt() {
-        $jq = filter_input(INPUT_POST, 'jq', FILTER_DEFAULT);
+        $bubble = filter_input(INPUT_POST, 'bubble', FILTER_DEFAULT);
         $inputData = [
             'limit' => form_sanitizer(filter_input(INPUT_POST, 'limit', FILTER_VALIDATE_INT), 0, 'limit'),
             'days'  => form_sanitizer(filter_input(INPUT_POST, 'days', FILTER_VALIDATE_INT), 0, 'days'),
-            'jq'    => !empty($jq) ? form_sanitizer($jq, 0, 'jq') : 0
+            'bubble'    => !empty($bubble) ? form_sanitizer($bubble, 0, 'bubble') : 0
         ];
 
         if (\defender::safe()) {
@@ -139,41 +145,44 @@ class PmControlAdmin {
 
     }
 
+    private static function DelAllMessages() {
+        $message_id = filter_input(INPUT_POST, 'message_id', FILTER_DEFAULT);
+        $input = (!empty($message_id)) ? explode(",", form_sanitizer($message_id, '', 'message_id')) : "";
+        if (!empty($input)) {
+            $dai = 0;
+            foreach ($input as $messages_id) {
+                if (dbcount("('message_id')", DB_MESSAGES, "message_id = :messageid", [':messageid' => (int)$messages_id]) && \defender::safe()) {
+                    dbquery("DELETE FROM ".DB_MESSAGES." WHERE message_id = :messageid", [':messageid' => (int)$messages_id]);
+                    $dai++;
+                }
+            }
+            addNotice('warning', sprintf(self::$locale['PMC_102'], $dai));
+            redirect(clean_request('', ['section', 'delete_message_id'], FALSE));
+        }
+        addNotice("warning", self::$locale['PMC_103']);
+    }
+
     private function PmMessages() {
         $aidlink = fusion_get_aidlink();
 
-        $delete_all = filter_input(INPUT_POST, 'delete_all', FILTER_DEFAULT);
-        if(!empty($delete_all)) {
-            $message_id = filter_input(INPUT_POST, 'message_id', FILTER_DEFAULT);
-            $input = (!empty($message_id)) ? explode(",", form_sanitizer($message_id, '', 'message_id')) : "";
-            if (!empty($input)) {
-                $i = 0;
-                foreach ($input as $messages_id) {
-                    if (dbcount("('message_id')", DB_MESSAGES, "message_id = :messageid", [':messageid' => (int)$messages_id]) && \defender::safe()) {
-                        dbquery("DELETE FROM ".DB_MESSAGES." WHERE message_id = :messageid", [':messageid' => (int)$messages_id]);
-                        $i++;
-                    }
-                }
-                addNotice('warning', sprintf(self::$locale['PMC_102'], $i));
-                redirect(clean_request('', ['section', 'delete_message_id'], FALSE));
-            }
-            addNotice("warning", self::$locale['PMC_103']);
-        }
+        $limit = $this->pmsettings['limit'];
 
-        $rowstart = (isset($_GET['rowstart']) AND isnum($_GET['rowstart'])) ? $_GET['rowstart'] : 0;
-
-        $pm_per_page = fusion_get_settings('comments_per_page');
-
-        $rows = dbrows(dbquery("SELECT * FROM ".DB_MESSAGES));
+        $rows = dbrows(dbquery("SELECT x1.*, x2.user_name as from_name, x2.user_id as id_from, x3.user_name as to_name, x3.user_id as id_to
+                FROM ".DB_MESSAGES." as x1
+                LEFT JOIN ".DB_USERS." as x2 on x2.user_id = x1.message_from
+                LEFT JOIN ".DB_USERS." as x3 on x3.user_id = x1.message_to
+                WHERE x1.message_from = x2.user_id AND x1.message_to = x3.user_id
+                ORDER BY message_id DESC"
+        ));
 
         if ($rows) {
-            $message_data = dbquery("SELECT x1.*, x2.user_name as from_name, x2.user_id as id_from, x3.user_name as to_name, x3.user_id as id_to
+            $result = dbquery("SELECT x1.*, x2.user_name as from_name, x2.user_id as id_from, x3.user_name as to_name, x3.user_id as id_to
                 FROM ".DB_MESSAGES." as x1
                 LEFT JOIN ".DB_USERS." as x2 on x2.user_id = x1.message_from
                 LEFT JOIN ".DB_USERS." as x3 on x3.user_id = x1.message_to
                 WHERE x1.message_from = x2.user_id AND x1.message_to = x3.user_id
                 ORDER BY message_id DESC
-                LIMIT ".$rowstart.",".$pm_per_page
+                LIMIT :rowstart, :limit", [':rowstart' => $this->rowstart, ':limit' => $limit]
             );
 
             $allnotread = dbcount("(message_id)", DB_MESSAGES, " message_folder ='0' && message_read = '0' ");
@@ -182,18 +191,17 @@ class PmControlAdmin {
 
             openside('');
 
-            if ($rows > $pm_per_page) {
-                echo "<div class='clearfix'>";
-                    echo "<div class='pull-right'>".makepagenav($rowstart, $pm_per_page, $rows, 3, FUSION_SELF.$aidlink."&amp;section=pm_messages&amp;")."</div>";
+            if ($rows > $limit) {
+                echo "<div class='clearfix'>\n";
+                echo "<div class='pull-right'>".makepagenav($this->rowstart, $limit, $rows, 3, FUSION_SELF.$aidlink."&amp;section=pm_messages&amp;")."</div>\n";
                 echo "</div>\n";
             }
-            echo "<div class='well'>".self::$locale['PMC_060']."</div>";
-            echo "<div class='text-right m-b-10'>".sprintf(self::$locale['PMC_071'], $allnotread, $allread, $allarchiv)."</div>";
+            echo "<div class='well'>".self::$locale['PMC_060']."</div>\n";
+            echo "<div class='text-right m-b-10'>".sprintf(self::$locale['PMC_071'], $allnotread, $allread, $allarchiv)."</div>\n";
 
-            echo "<div class='table-responsive'>";
+            echo "<div class='table-responsive'><table class='table table-hover'>\n";
 
-            echo "<table class='table table-hover'>
-		        <thead>
+            echo "<thead>
 			        <tr>
 				        <th></th>
 				        <th>".self::$locale['PMC_061']."</th>
@@ -206,41 +214,41 @@ class PmControlAdmin {
 				        <th>".self::$locale['delete']."</th>
 			       </tr>
 		       </thead>
-		       <tbody>";
+		       <tbody>\n";
             echo openform('pmcontrol_table', 'post', FUSION_SELF.$aidlink."&amp;section=pm_messages");
 
-            while($epc_data = dbarray($message_data))  {
+            while($data = dbarray($result))  {
 
-                $message_read = self::$locale['PMC_068'][$epc_data['message_read']];
-                $message_folder = self::$locale['PMC_069'][$epc_data['message_folder']];
-                $message = parseubb(parse_textarea($epc_data['message_message'], false, false));
-                $tx = "<div class='text-left'>".$message."</div>";
+                $message_read = self::$locale['PMC_068'][$data['message_read']];
+                $message_folder = self::$locale['PMC_069'][$data['message_folder']];
+                $message = parseubb(parse_textarea($data['message_message'], false, false));
+                $tx = "<div class='text-left'>".$message."</div>\n";
 
-                echo "<tr id='link-".$epc_data['message_id']."' data-id=".$epc_data['message_id']."'>
+                echo "<tr id='link-".$data['message_id']."' data-id=".$data['message_id']."'>
 			        <td>".form_checkbox('message_id[]', '', '', [
-			            'value'    => $epc_data['message_id'],
+			            'value'    => $data['message_id'],
 			            'class'    => 'm-0',
-			            'input_id' => 'link-id-'.$epc_data['message_id']
+			            'input_id' => 'link-id-'.$data['message_id']
 			        ])."</td>
-                    <td>[ <a href='".BASEDIR."profile.php?lookup=".$epc_data['id_from']."' target='_new'>".$epc_data['from_name']."</a> ]</td>
-                    <td>[ <a href='".BASEDIR."profile.php?lookup=".$epc_data['id_to']."' target='_new'>".$epc_data['to_name']."</a> ]</td>
-                    <td>".$epc_data['message_subject']."</td>
-                    <td>".fusion_parse_user('@'.$epc_data['from_name'],$tx)."</td>
-                    <td>".date(self::$locale['PMC_datepicker'], $epc_data['message_datestamp'])."</td>
+                    <td>[ <a href='".BASEDIR."profile.php?lookup=".$data['id_from']."' target='_new'>".$data['from_name']."</a> ]</td>
+                    <td>[ <a href='".BASEDIR."profile.php?lookup=".$data['id_to']."' target='_new'>".$data['to_name']."</a> ]</td>
+                    <td>".$data['message_subject']."</td>
+                    <td>".fusion_parse_user('@'.$data['from_name'], $tx)."</td>
+                    <td>".date(self::$locale['PMC_datepicker'], $data['message_datestamp'])."</td>
                     <td>".$message_read."</td>
                     <td>".$message_folder."</td>
-                    <td><a class='btn btn-default' href='".FUSION_SELF.$aidlink."&amp;section=pm_messages&amp;delete_message_id=".$epc_data['message_id']."' onclick=\"return confirm('".self::$locale['PMC_104']."')\"><i class='fa fa-times white'></i> ".self::$locale['delete']."</a></td>
-                </tr>";
+                    <td><a class='btn btn-default' href='".FUSION_SELF.$aidlink."&amp;section=pm_messages&amp;delete_message_id=".$data['message_id']."' onclick=\"return confirm('".self::$locale['PMC_104']."')\"><i class='fa fa-times white'></i> ".self::$locale['delete']."</a></td>
+                </tr>\n";
 
-                add_to_jquery('$("#link-id-'.$epc_data['message_id'].'").click(function() {
+                add_to_jquery('$("#link-id-'.$data['message_id'].'").click(function() {
                     if ($(this).prop("checked")) {
-                        $("#link-'.$epc_data['message_id'].'").addClass("active");
+                        $("#link-'.$data['message_id'].'").addClass("active");
                     } else {
-                        $("#link-'.$epc_data['message_id'].'").removeClass("active");
+                        $("#link-'.$data['message_id'].'").removeClass("active");
                     }
 	            });');
             }
-            echo "</tbody></table>";
+            echo "</tbody></table>\n";
 
             echo form_checkbox('check_all', self::$locale['PMC_070'], '', [
                 'reverse_label' => TRUE,
@@ -266,49 +274,44 @@ class PmControlAdmin {
 	        ");
             echo "</div>";
 
-            if ($rows > $pm_per_page) {
-                echo "<div class='clearfix'>";
-                    echo "<div class='pull-right'>".makepagenav($rowstart, $pm_per_page, $rows, 3, FUSION_SELF.$aidlink."&amp;section=pm_messages&amp;")."</div>";
+            if ($rows > $limit) {
+                echo "<div class='clearfix'>\n";
+                echo "<div class='pull-right'>".makepagenav($this->rowstart, $limit, $rows, 3, FUSION_SELF.$aidlink."&amp;section=pm_messages&amp;")."</div>\n";
                 echo "</div>\n";
             }
             closeside();
         } else {
 
-            echo "<div class='text-center well'>".self::$locale['PMC_105']."</div>";
+            echo "<div class='text-center well'>".self::$locale['PMC_105']."</div>\n";
         }
     }
 
-    private function pm_count() {
+    private function PmCount() {
 
-        $rowstart = (isset($_GET['rowstart']) AND isnum($_GET['rowstart'])) ? $_GET['rowstart'] : 0;
-        $pm_per_page = fusion_get_settings('comments_per_page');
+        $aidlink = fusion_get_aidlink();
+        $limit = $this->pmsettings['limit'];
 
-        $result = dbquery("SELECT m.*, u.user_lastvisit, u.user_email, u.user_id, u.user_name, COUNT(message_to) AS message_count
-            FROM ".DB_USERS." u
-            LEFT JOIN ".DB_MESSAGES." m ON u.user_id=m.message_to
-            GROUP BY user_id
-        ");
+        $rows = dbcount("(message_id)", DB_MESSAGES, "");
 
-        $rows = dbrows($result);
-
-        echo "<div class='well'>".self::$locale['PMC_080']."</div>";
-
-        if ($rows > $pm_per_page) {
-            echo makepagenav($rowstart, $pm_per_page, $rows, 3, FUSION_SELF.$aidlink."&amp;section=pm_count&amp;");
-        }
+        echo "<div class='well'>".self::$locale['PMC_080']."</div>\n";
 
         if ($rows) {
+            if ($rows > $limit) {
+                echo "<div class='clearfix'>\n";
+                echo "<div class='pull-right'>".makepagenav($this->rowstart, $limit, $rows, 3, FUSION_SELF.$aidlink."&amp;section=pm_count&amp;")."</div>\n";
+                echo "</div>\n";
+            }
+
             $result = dbquery("SELECT m.*, u.user_lastvisit, u.user_email, u.user_id, u.user_name, COUNT(message_to) AS message_to
-                FROM ".DB_USERS." u
-                LEFT JOIN ".DB_MESSAGES." m ON user_id=message_to
+                FROM ".DB_USERS." AS u
+                LEFT JOIN ".DB_MESSAGES." AS m ON u.user_id = m.message_to
                 GROUP BY user_id
                 ORDER BY message_to DESC
-                LIMIT ".$rowstart.",20"
+                LIMIT :rowstart, :limit", [':rowstart' => $this->rowstart, ':limit' => $limit]
             );
 
-            echo "<div class='table-responsive'>";
-            echo "<table class='table table-hover'>
-                <thead>
+            echo "<div class='table-responsive'><table class='table table-hover'>\n";
+            echo "<thead>
                     <tr>
                         <th>".self::$locale['PMC_081']."</th>
                         <th>".self::$locale['PMC_082']."</th>
@@ -316,27 +319,29 @@ class PmControlAdmin {
                         <th>".self::$locale['PMC_084']."</th>
                     </tr>
                 </thead>
-                <tbody>";
+                <tbody>\n";
             $db_to = 0; $db_from = 0;
-            while($epc_data = dbarray($result)) {
-            	$db = dbcount("(message_id)", DB_MESSAGES, "message_from=".$epc_data['user_id']);
-            	$db_to = $db_to + $epc_data['message_to'];
+            while($data = dbarray($result)) {
+            	$db = dbcount("(message_id)", DB_MESSAGES, "message_from = :messagefrom", [':messagefrom' => (int)$data['user_id']]);
+            	$db_to = $db_to + $data['message_to'];
             	$db_from = $db_from + $db;
 
             	echo "<tr>
-            	    <td>".fusion_parse_user('@'.$epc_data['user_name'])."</td>
-            	    <td><a href='mailto:".$epc_data['user_email']."'>".$epc_data['user_email']."</a></td>
-            	    <td>".showdate("longdate", $epc_data['user_lastvisit'])."</td>
-            	    <td>".$epc_data['message_to']."/".$db."</td>
-                </tr>";
+            	    <td>".fusion_parse_user('@'.$data['user_name'])."</td>
+            	    <td><a href='mailto:".$data['user_email']."'>".$data['user_email']."</a></td>
+            	    <td>".showdate("longdate", $data['user_lastvisit'])."</td>
+            	    <td>".$data['message_to']."/".$db."</td>
+                </tr>\n";
             }
 
-            echo"</tbody></table>";
-            echo "</div>";
+            echo "</tbody></table>\n";
+            echo "</div>\n";
             echo "<div class='text-center'>".sprintf(self::$locale['PMC_085'], $db_to, $db_from)."</div>\n";
 
-            if ($rows > $pm_per_page) {
-                echo makepagenav($rowstart, $pm_per_page, $rows, 3, FUSION_SELF.$aidlink."&amp;section=pm_count&amp;");
+            if ($rows > $limit) {
+                echo "<div class='clearfix'>\n";
+                echo "<div class='pull-right'>".makepagenav($this->rowstart, $limit, $rows, 3, FUSION_SELF.$aidlink."&amp;section=pm_count&amp;")."</div>\n";
+                echo "</div>\n";
             }
 
         } else {

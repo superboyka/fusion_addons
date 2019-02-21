@@ -22,7 +22,6 @@ class PmControl {
     private static $locale = [];
 
     public function __construct() {
-        require_once INCLUDES."infusions_include.php";
         require_once PMC_CLASS."templates.php";
         self::$locale = fusion_get_locale("", PMC_LOCALE);
         $this->pmsettings = get_settings("pm_control_panel");
@@ -37,14 +36,14 @@ class PmControl {
 
     public function DisplayPmcontrol() {
         if ($this->CheckDay()) {
-            self::DailyChecks();
+            $this->DailyChecks();
         }
 
         if ($this->CountMessages()) {
             $info = [
                 'openside' => self::$locale['PMC_010'],
-                'info'      => sprintf(self::$locale['PMC_D01'], $this->pmsettings['days']),
-                'item'      => $this->PmUser()
+                'info'     => sprintf(self::$locale['PMC_D01'], $this->pmsettings['days']),
+                'item'     => $this->PmUser()
             ];
 
             DisplayPm($info);
@@ -72,7 +71,8 @@ class PmControl {
                 'avatar'  => display_avatar($data, '50px', '', '', ''),
                 'profile' => profile_link($data['user_id'], $data['user_name'], $data['user_status']),
                 'dates'   => showdate(self::$locale['PMC_date'], $data['message_datestamp']),
-                'pmtag'   => self::PmTags($data, $data['message_subject'], $text)
+                'pmtag'   => $this->pmsettings['bubble'] ? $this->PmTags($data, $data['message_subject'], $text) :
+                    "<a href='".BASEDIR."messages.php?folder=inbox&amp;msg_read=".$data['message_id']."'>".$data['message_subject']."</a>"
             ];
 
             $info[$data['message_id']] = $inf;
@@ -83,8 +83,7 @@ class PmControl {
 
     private function CheckDay() {
         $days = date(mktime(0,0,0,date("m"),date("d"),date("Y")));
-        $info = ($this->pmsettings['control'] < $days || empty($this->pmsettings['control'])) ? TRUE : FALSE;
-    	return $info;
+        return ($this->pmsettings['control'] < $days || empty($this->pmsettings['control'])) ? TRUE : FALSE;
     }
 
     private function DailyChecks() {
@@ -92,13 +91,13 @@ class PmControl {
 
         $result = dbquery("SELECT *
             FROM ".DB_MESSAGES."
-            WHERE  message_folder=:folder AND message_read=:read AND message_datestamp<:datest
+            WHERE  message_folder = :folder AND message_read = :read AND message_datestamp < :datest
             ORDER BY message_datestamp DESC", [':folder' => '0', ':read' => '0', ':datest' => $dates]
         );
 
         if (dbrows($result)) {
 		    // Removing unread messages from the database
-            dbquery("DELETE FROM ".DB_MESSAGES." WHERE message_folder=:folder AND message_read=:read AND message_datestamp<:datest", [':folder' => '0', ':read' => '0', ':datest' => $dates]);
+            dbquery("DELETE FROM ".DB_MESSAGES." WHERE message_folder = :folder AND message_read = :read AND message_datestamp < :datest", [':folder' => '0', ':read' => '0', ':datest' => $dates]);
 
             $message= dbrows($result).self::$locale['PMC_021'].$this->pmsettings['days'].self::$locale['PMC_022'];
             dbquery("INSERT INTO ".DB_MESSAGES." (message_to, message_from, message_user, message_subject, message_message, message_smileys, message_read, message_datestamp, message_folder) VALUES('1', '1', '1', '".self::$locale['PMC_023']."', '".$message."', 'y', '0', '".time()."', '0')");
@@ -120,7 +119,6 @@ class PmControl {
         $content .= "<a class='btn btn-block btn-primary' href='".BASEDIR."messages.php?folder=inbox&amp;msg_read=".$data['message_id']."'>".self::$locale['PMC_020']."</a>";
         $html = '<a class="strong pointer" tabindex="0" role="button" data-html="true" data-trigger="focus" data-placement="top" data-toggle="user-pmtags" title="'.$title.'" data-content="'.$content.'">';
         $html .= "<span class='user-label'>".$subject."</span>";
-        //$html .= "</a>\n";
         return $html;
     }
 
