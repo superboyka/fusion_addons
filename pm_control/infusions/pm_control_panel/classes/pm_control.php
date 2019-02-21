@@ -20,7 +20,6 @@ namespace PHPFusion\PmControl;
 class PmControl {
     private static $instance = NULL;
     private static $locale = [];
-    private $pmsettings = [];
 
     public function __construct() {
         require_once INCLUDES."infusions_include.php";
@@ -37,17 +36,19 @@ class PmControl {
     }
 
     public function DisplayPmcontrol() {
-        if (self::CheckDay()) { self::DailyChecks(); }
+        if ($this->CheckDay()) {
+            self::DailyChecks();
+        }
 
         if ($this->CountMessages()) {
             $info = [
                 'openside' => self::$locale['PMC_010'],
                 'info'      => sprintf(self::$locale['PMC_D01'], $this->pmsettings['days']),
-                'item'      => $this->PmData()
+                'item'      => $this->PmUser()
             ];
+
             DisplayPm($info);
         }
-        	// self::PmData(); }
     }
 
     private function CountMessages() {
@@ -65,34 +66,19 @@ class PmControl {
 
         $info = [];
         while($data = dbarray($result)) {
-            $info[$data['message_id']]	= $data;
+
+            $text = "<div class='text-left'>".($data['message_smileys'] == "y" ? parseubb(parsesmileys($data['message_message'])) : parseubb($data['message_message']))."</div>";
+            $inf = [
+                'avatar'  => display_avatar($data, '50px', '', '', ''),
+                'profile' => profile_link($data['user_id'], $data['user_name'], $data['user_status']),
+                'dates'   => showdate(self::$locale['PMC_date'], $data['message_datestamp']),
+                'pmtag'   => self::PmTags($data, $data['message_subject'], $text)
+            ];
+
+            $info[$data['message_id']] = $inf;
         }
 
     	return $info;
-    }
-
-    private function PmData() {
-    	$data = self::PmUser();
-        if (!empty($data)) {
-        	//$info['openside'] = self::$locale['PMC_010'];
-        	//$info['locale'] = [self::$locale['PMC_011'], self::$locale['PMC_012'], self::$locale['PMC_013']];
-        	//$info['info0'] = self::$locale['PMC_D00'];
-        	//$info['info'] = sprintf(self::$locale['PMC_D01'], $this->pmsettings['days']);
-            foreach ($data as $messages) {
-            	$text = "<div class='text-left'>".($messages['message_smileys'] == "y" ? parseubb(parsesmileys($messages['message_message'])) : parseubb($messages['message_message']))."</div>";
-                $inf = [
-                    'avatar'   => display_avatar($messages, '50px', '', '', ''),
-                    'profile'  => profile_link($messages['user_id'], $messages['user_name'], $messages['user_status']),
-                    'dates'    => showdate(self::$locale['PMC_date'], $messages['message_datestamp']),
-                    'pmtag'    => self::PmTags($messages, $messages['message_subject'], $text),
-                ];
-
-                $info[$messages['message_id']] = $inf;
-            }
-
-            return $info;
-        }
-        return FALSE;
     }
 
     private function CheckDay() {
@@ -102,8 +88,7 @@ class PmControl {
     }
 
     private function DailyChecks() {
-        $days = $this->pmsettings['days'];
-        $dates = (time() - ($days * 86400));
+        $dates = (time() - ($this->pmsettings['days'] * 86400));
 
         $result = dbquery("SELECT *
             FROM ".DB_MESSAGES."
@@ -113,9 +98,9 @@ class PmControl {
 
         if (dbrows($result)) {
 		    // Removing unread messages from the database
-            $delete = dbquery("DELETE FROM ".DB_MESSAGES." WHERE message_folder=:folder AND message_read=:read AND message_datestamp<:datest", [':folder' => '0', ':read' => '0', ':datest' => $dates]);
+            dbquery("DELETE FROM ".DB_MESSAGES." WHERE message_folder=:folder AND message_read=:read AND message_datestamp<:datest", [':folder' => '0', ':read' => '0', ':datest' => $dates]);
 
-            $message= dbrows($result).self::$locale['PMC_021'].$days.self::$locale['PMC_022'];
+            $message= dbrows($result).self::$locale['PMC_021'].$this->pmsettings['days'].self::$locale['PMC_022'];
             dbquery("INSERT INTO ".DB_MESSAGES." (message_to, message_from, message_user, message_subject, message_message, message_smileys, message_read, message_datestamp, message_folder) VALUES('1', '1', '1', '".self::$locale['PMC_023']."', '".$message."', 'y', '0', '".time()."', '0')");
         }
 

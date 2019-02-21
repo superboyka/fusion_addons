@@ -27,9 +27,9 @@ if (!defined("PMC_CLASS")) {
 
 // Locale
 if (!defined("PMC_LOCALE")) {
-    if (file_exists(PMC_CLASS."locale/".LANGUAGE.".php")) {
-        define("PMC_LOCALE", PMC_CLASS."locale/".LANGUAGE.".php");
+    if (file_exists(PMC_CLASS."locale/".LOCALESET."control.php")) {
+        define("PMC_LOCALE", PMC_CLASS."locale/".LOCALESET."control.php");
     } else {
-        define("PMC_LOCALE", PMC_CLASS."locale/Hungarian.php");
+        define("PMC_LOCALE", PMC_CLASS."locale/Hungarian/control.php");
     }
 }

@@ -4,7 +4,7 @@
 | Copyright (C) PHP-Fusion Inc
 | https://www.php-fusion.co.uk/
 +--------------------------------------------------------+
-| Filename: pm_control_panel//pm_control_panel.php
+| Filename: pm_control_panel/pm_control_panel.php
 | Author: karrak
 +--------------------------------------------------------+
 | This program is released as free software under the
@@ -19,5 +19,7 @@ if (!defined("IN_FUSION")) {
     die("Access Denied");
 }
 
-include_once PMC_CLASS."autoload.php";
-\PHPFusion\PmControl\PmControl::getInstance()->DisplayPmcontrol();
+if (defined('PM_CONTROL_PANEL_EXIST')) {
+    include_once PMC_CLASS."autoload.php";
+    \PHPFusion\PmControl\PmControl::getInstance()->DisplayPmcontrol();
+}

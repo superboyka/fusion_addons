@@ -13,7 +13,7 @@ $locale['PMC_020'] = "Privát üzenetekhez";
 $locale['PMC_021'] = " üzenet törölve lett az adatbázisból, amit már ";
 $locale['PMC_022'] = " napja nem nyitottak meg olvasásra.";
 $locale['PMC_023'] = "Régi üzenetek törlése";
-$locale['PMC_D00'] = "Kattints az Üzenet tárgyára az üzenet olvasásához.";
+$locale['PMC_D00'] = "Kattints az Üzenet tárgyára az olvasásához.";
 $locale['PMC_D01'] = "Weboldalunkon az olyan olvasatlan üzenetek melyek %s napnál régebbiek, törlésre kerülnek.";
 $locale['PMC_date'] = "%b %d, %H:%M:%S";
 $locale['PMC_datepicker'] = "Y-m-d H:i:s";
@@ -41,7 +41,7 @@ $locale['PMC_068'] = ["<span class='label label-warning'>Nem olvasott</span>", "
 $locale['PMC_069'] = ["<span class='label label-primary'>Bejövő levelek</span>", "<span class='label label-success'>Kimenő levelek</span>", "<span class='label label-danger'>Archív levelek</span>"];
 $locale['PMC_070'] = "Összes Kijelölése";
 $locale['PMC_071'] = "Összes Olvasatlan üzenet %s, Olvasott üzenet %s, Archivált üzenet %s";
-$locale['PMC_072'] = "PM Control Beállítások";
+$locale['PMC_072'] = "PM Kontrol Beállítások";
 
 $locale['PMC_080'] = "Privát üzenetet küldhet, ha rákattintasz a Felhasználó Nevére.";
 $locale['PMC_081'] = "Felhasználó";
