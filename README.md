@@ -1,5 +1,5 @@
 # PHP-Fusion_Addons
-<p>PHP-Fusion programok</p>
+<p>PHP-Fusion programok 9.03 verzió kompatibilis.</p>
 <p>Infusion:</p>
 <ul>
 <li><a href="https://github.com/karrak1/PHP-Fusion_Addons/tree/master/avatar_studio">Avatar Stúdió</a></li>
@@ -10,7 +10,7 @@
 
 <p>Panel:</p>
 <ul>
-<li><a href="https://github.com/karrak1/PHP-Fusion_Addons/tree/master/pm_control">PM Kontroll</a></li>
+<li><a href="https://github.com/karrak1/fusion_addons/tree/Fusion-9.03/pm_control">PM Kontroll</a></li>
 <li><a href="https://github.com/karrak1/PHP-Fusion_Addons/tree/master/welcome_pm_panel">Üdvözlő PM Üzenet</a></li>
 </ul>
 
