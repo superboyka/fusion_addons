@@ -1,0 +1,33 @@
+{%openside%}
+    <div class='m-b-10 text-center'>{[PMC_D00]}</div>
+    <div class='table-responsive'><table class='table table-bordered clear'>
+        <thead>
+            <tr>
+                <th>
+                    <small class='text-uppercase strong text-lighter'>{[PMC_011]}</small>
+                </th>
+                <th>
+                    <small class='text-uppercase strong text-lighter'>{[PMC_012]}</small>
+                </th>
+                <th>
+                    <small class='text-uppercase strong text-lighter'>{[PMC_013]}</small>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+        {pmcontrol.{
+            <tr>
+                <td>
+                    <div class='clearfix'>
+                        <div class='pull-left m-r-10'>{%avatar%}</div>
+                        <div class='overflow-hide'><span class='m-l-10 m-r-10'>{%profile%}</span></div>
+                    </div>
+                </td>
+                <td>{%pmtag%}</td>
+                <td>{%dates%}</td>
+            </tr>
+        }}
+        </tbody>
+    </table></div>
+    <div class='bg-info text-center'>{%info%}</div>
+{%closeside%}
