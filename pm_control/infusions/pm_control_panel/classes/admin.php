@@ -55,7 +55,7 @@ class PmControlAdmin {
         $delete_message_id = filter_input(INPUT_GET, 'delete_message_id', FILTER_VALIDATE_INT);
         $delete_all = filter_input(INPUT_POST, 'delete_all', FILTER_DEFAULT);
         opentable(self::$locale['PMC_053']);
-        echo opentab($pm_tab, $section, 'pm_messages', TRUE, '', 'section', ['rowstart']);
+        echo opentab($pm_tab, $section, 'pm_messages', TRUE, '', 'section');
         switch ($section) {
             case 'pm_count':
                 $this->PmCount();
@@ -190,8 +190,6 @@ class PmControlAdmin {
             $allread = dbcount("(message_id)", DB_MESSAGES, " message_folder ='0' && message_read = '1' ");
             $allarchiv = dbcount("(message_id)", DB_MESSAGES, " message_folder ='2' && message_read = '1' ");
 
-            openside('');
-
             if ($rows > $limit) {
                 $txt .= "<div class='clearfix'>\n";
                 $txt .= "<div class='pull-right'>".makepagenav($this->rowstart, $limit, $rows, 3, FUSION_SELF.$aidlink."&amp;section=pm_messages&amp;")."</div>\n";
@@ -280,7 +278,6 @@ class PmControlAdmin {
                 $txt .= "<div class='pull-right'>".makepagenav($this->rowstart, $limit, $rows, 3, FUSION_SELF.$aidlink."&amp;section=pm_messages&amp;")."</div>\n";
                 $txt .= "</div>\n";
             }
-            closeside();
         } else {
 
             $txt .= "<div class='text-center well'>".self::$locale['PMC_105']."</div>\n";

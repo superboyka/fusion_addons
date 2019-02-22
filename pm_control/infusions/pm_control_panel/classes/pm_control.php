@@ -43,6 +43,8 @@ class PmControl {
             $info = [
                 'openside' => self::$locale['PMC_010'],
                 'info'     => sprintf(self::$locale['PMC_D01'], $this->pmsettings['days']),
+                'locale'   => [self::$locale['PMC_011'], self::$locale['PMC_012'], self::$locale['PMC_013']],
+                'info0'    => self::$locale['PMC_D00'],
                 'item'     => $this->PmUser()
             ];
 

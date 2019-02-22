@@ -20,28 +20,6 @@ if (!defined("IN_FUSION")) {
 }
 
 if (!function_exists("DisplayPm")) {
-    function DisplayPm($info) {
-        $html = \PHPFusion\Template::getInstance('pmcontrolform');
-        $html->set_template(PMC_CLASS.'templates/pmcontrol.html');
-        $html->set_locale(fusion_get_locale());
-        $html->set_tag('openside', fusion_get_function('openside', $info['openside']));
-        $html->set_tag('closeside', fusion_get_function('closeside'));
-
-        $html->set_tag('info', $info['info']);
-
-        foreach ($info['item'] as $data) {
-            $html->set_block('pmcontrol', [
-                'avatar'   => $data['avatar'],
-                'profile'  => $data['profile'],
-                'dates'    => $data['dates'],
-                'pmtag'    => $data['pmtag']
-            ]);
-        }
-        echo $html->get_output();
-    }
-}
-/*} else {
-    if (!function_exists("DisplayPm")) {
         function DisplayPm($info) {
 
             openside($info['openside']);
@@ -72,5 +50,4 @@ if (!function_exists("DisplayPm")) {
             echo "<div class='bg-info text-center'>".$info['info']."</div>";
     	    closeside();
         }
-    }
-} */
+}

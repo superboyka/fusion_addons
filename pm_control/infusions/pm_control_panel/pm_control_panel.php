@@ -19,7 +19,5 @@ if (!defined("IN_FUSION")) {
     die("Access Denied");
 }
 
-if (defined('PM_CONTROL_PANEL_EXIST')) {
-    include_once PMC_CLASS."autoload.php";
-    \PHPFusion\PmControl\PmControl::getInstance()->DisplayPmcontrol();
-}
+include_once PMC_CLASS."autoload.php";
+\PHPFusion\PmControl\PmControl::getInstance()->DisplayPmcontrol();
