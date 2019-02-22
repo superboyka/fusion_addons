@@ -84,31 +84,32 @@ class PmControlAdmin {
         }
 
         opentable(self::$locale['PMC_005']);
-        echo "<div class='well'>".self::$locale['PMC_072']."</div>";
-        echo "<hr/>\n";
-        echo openform('pmcontrol', 'post', FUSION_REQUEST);
-        echo form_text('limit', self::$locale['PMC_054'], $this->pmsettings['limit'], [
+        $txt = "<div class='well'>".self::$locale['PMC_072']."</div>";
+        $txt .= "<hr/>\n";
+        $txt .= openform('pmcontrol', 'post', FUSION_REQUEST);
+        $txt .= form_text('limit', self::$locale['PMC_054'], $this->pmsettings['limit'], [
             'inline'      => TRUE,
             'type'        => 'number',
             'inner_width' => '60px',
             'ext_tip'     => self::$locale['PMC_055']
         ]);
 
-        echo form_text('days', self::$locale['PMC_056'], $this->pmsettings['days'], [
+        $txt .= form_text('days', self::$locale['PMC_056'], $this->pmsettings['days'], [
             'inline'      => TRUE,
             'type'        => 'number',
             'inner_width' => '60px',
             'ext_tip'     => self::$locale['PMC_057']
         ]);
 
-        echo form_checkbox('bubble', self::$locale['PMC_058'], $this->pmsettings['bubble'], [
+        $txt .= form_checkbox('bubble', self::$locale['PMC_058'], $this->pmsettings['bubble'], [
             'inline'  => TRUE,
             'ext_tip' => self::$locale['PMC_059']
         ]);
 
-        echo form_button('save_settings', self::$locale['save'], self::$locale['save'], ['class' => 'btn-success', 'icon' => 'fa fa-hdd-o']);
-        echo closeform();
+        $txt .= form_button('save_settings', self::$locale['save'], self::$locale['save'], ['class' => 'btn-success', 'icon' => 'fa fa-hdd-o']);
+        $txt .= closeform();
         closetable();
+        echo $txt;
     }
 
     private static function PmSaveSt() {
@@ -159,14 +160,14 @@ class PmControlAdmin {
             addNotice('warning', sprintf(self::$locale['PMC_102'], $dai));
             redirect(clean_request('', ['section', 'delete_message_id'], FALSE));
         }
-        addNotice("warning", self::$locale['PMC_103']);
+        addNotice('warning', self::$locale['PMC_103']);
     }
 
     private function PmMessages() {
         $aidlink = fusion_get_aidlink();
 
         $limit = $this->pmsettings['limit'];
-
+        $txt = '';
         $rows = dbrows(dbquery("SELECT x1.*, x2.user_name as from_name, x2.user_id as id_from, x3.user_name as to_name, x3.user_id as id_to
                 FROM ".DB_MESSAGES." as x1
                 LEFT JOIN ".DB_USERS." as x2 on x2.user_id = x1.message_from
@@ -192,39 +193,39 @@ class PmControlAdmin {
             openside('');
 
             if ($rows > $limit) {
-                echo "<div class='clearfix'>\n";
-                echo "<div class='pull-right'>".makepagenav($this->rowstart, $limit, $rows, 3, FUSION_SELF.$aidlink."&amp;section=pm_messages&amp;")."</div>\n";
-                echo "</div>\n";
+                $txt .= "<div class='clearfix'>\n";
+                $txt .= "<div class='pull-right'>".makepagenav($this->rowstart, $limit, $rows, 3, FUSION_SELF.$aidlink."&amp;section=pm_messages&amp;")."</div>\n";
+                $txt .= "</div>\n";
             }
-            echo "<div class='well'>".self::$locale['PMC_060']."</div>\n";
-            echo "<div class='text-right m-b-10'>".sprintf(self::$locale['PMC_071'], $allnotread, $allread, $allarchiv)."</div>\n";
+            $txt .= "<div class='well'>".self::$locale['PMC_060']."</div>\n";
+            $txt .= "<div class='text-right m-b-10'>".sprintf(self::$locale['PMC_071'], $allnotread, $allread, $allarchiv)."</div>\n";
 
-            echo "<div class='table-responsive'><table class='table table-hover'>\n";
+            $txt .= "<div class='table-responsive'><table class='table table-hover'>\n";
 
-            echo "<thead>
-			        <tr>
-				        <th></th>
-				        <th>".self::$locale['PMC_061']."</th>
-				        <th>".self::$locale['PMC_062']."</th>
-				        <th>".self::$locale['PMC_063']."</th>
-				        <th>".self::$locale['PMC_064']."</th>
-				        <th>".self::$locale['PMC_065']."</th>
-				        <th>".self::$locale['PMC_066']."</th>
-				        <th>".self::$locale['PMC_067']."</th>
-				        <th>".self::$locale['delete']."</th>
-			       </tr>
-		       </thead>
-		       <tbody>\n";
-            echo openform('pmcontrol_table', 'post', FUSION_SELF.$aidlink."&amp;section=pm_messages");
+            $txt .= "<thead>
+                <tr>
+                    <th></th>
+                    <th>".self::$locale['PMC_061']."</th>
+                    <th>".self::$locale['PMC_062']."</th>
+                    <th>".self::$locale['PMC_063']."</th>
+                    <th>".self::$locale['PMC_064']."</th>
+                    <th>".self::$locale['PMC_065']."</th>
+                    <th>".self::$locale['PMC_066']."</th>
+                    <th>".self::$locale['PMC_067']."</th>
+                    <th>".self::$locale['delete']."</th>
+                </tr>
+                </thead>
+                <tbody>\n";
+            $txt .= openform('pmcontrol_table', 'post', FUSION_SELF.$aidlink."&amp;section=pm_messages");
 
             while($data = dbarray($result))  {
 
                 $message_read = self::$locale['PMC_068'][$data['message_read']];
                 $message_folder = self::$locale['PMC_069'][$data['message_folder']];
                 $message = parseubb(parse_textarea($data['message_message'], false, false));
-                $tx = "<div class='text-left'>".$message."</div>\n";
+                $text = "<div class='text-left'>".$message."</div>\n";
 
-                echo "<tr id='link-".$data['message_id']."' data-id=".$data['message_id']."'>
+                $txt .= "<tr id='link-".$data['message_id']."' data-id=".$data['message_id']."'>
 			        <td>".form_checkbox('message_id[]', '', '', [
 			            'value'    => $data['message_id'],
 			            'class'    => 'm-0',
@@ -233,7 +234,7 @@ class PmControlAdmin {
                     <td>[ <a href='".BASEDIR."profile.php?lookup=".$data['id_from']."' target='_new'>".$data['from_name']."</a> ]</td>
                     <td>[ <a href='".BASEDIR."profile.php?lookup=".$data['id_to']."' target='_new'>".$data['to_name']."</a> ]</td>
                     <td>".$data['message_subject']."</td>
-                    <td>".fusion_parse_user('@'.$data['from_name'], $tx)."</td>
+                    <td>".fusion_parse_user('@'.$data['from_name'], $text)."</td>
                     <td>".date(self::$locale['PMC_datepicker'], $data['message_datestamp'])."</td>
                     <td>".$message_read."</td>
                     <td>".$message_folder."</td>
@@ -248,18 +249,18 @@ class PmControlAdmin {
                     }
 	            });');
             }
-            echo "</tbody></table>\n";
+            $txt .= "</tbody></table>\n";
 
-            echo form_checkbox('check_all', self::$locale['PMC_070'], '', [
+            $txt .= form_checkbox('check_all', self::$locale['PMC_070'], '', [
                 'reverse_label' => TRUE,
                 'class'         => 'pull-left'
             ]);
-            echo form_button('delete_all', self::$locale['delete'], self::$locale['delete'], [
+            $txt .= form_button('delete_all', self::$locale['delete'], self::$locale['delete'], [
                 'class' => 'btn-danger m-l-10',
                 'icon'  => 'fa fa-fw fa-trash-o'
             ]);
 
-            echo closeform();
+            $txt .= closeform();
 
             add_to_jquery("
                 $('#check_all').bind('click', function() {
@@ -272,18 +273,19 @@ class PmControlAdmin {
                     }
                 });
 	        ");
-            echo "</div>";
+            $txt .= "</div>";
 
             if ($rows > $limit) {
-                echo "<div class='clearfix'>\n";
-                echo "<div class='pull-right'>".makepagenav($this->rowstart, $limit, $rows, 3, FUSION_SELF.$aidlink."&amp;section=pm_messages&amp;")."</div>\n";
-                echo "</div>\n";
+                $txt .= "<div class='clearfix'>\n";
+                $txt .= "<div class='pull-right'>".makepagenav($this->rowstart, $limit, $rows, 3, FUSION_SELF.$aidlink."&amp;section=pm_messages&amp;")."</div>\n";
+                $txt .= "</div>\n";
             }
             closeside();
         } else {
 
-            echo "<div class='text-center well'>".self::$locale['PMC_105']."</div>\n";
+            $txt .= "<div class='text-center well'>".self::$locale['PMC_105']."</div>\n";
         }
+        echo $txt;
     }
 
     private function PmCount() {
@@ -293,13 +295,13 @@ class PmControlAdmin {
 
         $rows = dbcount("(message_id)", DB_MESSAGES, "");
 
-        echo "<div class='well'>".self::$locale['PMC_080']."</div>\n";
+        $txt = "<div class='well'>".self::$locale['PMC_080']."</div>\n";
 
         if ($rows) {
             if ($rows > $limit) {
-                echo "<div class='clearfix'>\n";
-                echo "<div class='pull-right'>".makepagenav($this->rowstart, $limit, $rows, 3, FUSION_SELF.$aidlink."&amp;section=pm_count&amp;")."</div>\n";
-                echo "</div>\n";
+                $txt .= "<div class='clearfix'>\n";
+                $txt .= "<div class='pull-right'>".makepagenav($this->rowstart, $limit, $rows, 3, FUSION_SELF.$aidlink."&amp;section=pm_count&amp;")."</div>\n";
+                $txt .= "</div>\n";
             }
 
             $result = dbquery("SELECT m.*, u.user_lastvisit, u.user_email, u.user_id, u.user_name, COUNT(message_to) AS message_to
@@ -310,8 +312,8 @@ class PmControlAdmin {
                 LIMIT :rowstart, :limit", [':rowstart' => $this->rowstart, ':limit' => $limit]
             );
 
-            echo "<div class='table-responsive'><table class='table table-hover'>\n";
-            echo "<thead>
+            $txt .= "<div class='table-responsive'><table class='table table-hover'>\n";
+            $txt .= "<thead>
                     <tr>
                         <th>".self::$locale['PMC_081']."</th>
                         <th>".self::$locale['PMC_082']."</th>
@@ -322,30 +324,31 @@ class PmControlAdmin {
                 <tbody>\n";
             $db_to = 0; $db_from = 0;
             while($data = dbarray($result)) {
-            	$db = dbcount("(message_id)", DB_MESSAGES, "message_from = :messagefrom", [':messagefrom' => (int)$data['user_id']]);
+            	$mdb = dbcount("(message_id)", DB_MESSAGES, "message_from = :messagefrom", [':messagefrom' => (int)$data['user_id']]);
             	$db_to = $db_to + $data['message_to'];
-            	$db_from = $db_from + $db;
+            	$db_from = $db_from + $mdb;
 
-            	echo "<tr>
+            	$txt .= "<tr>
             	    <td>".fusion_parse_user('@'.$data['user_name'])."</td>
             	    <td><a href='mailto:".$data['user_email']."'>".$data['user_email']."</a></td>
             	    <td>".showdate("longdate", $data['user_lastvisit'])."</td>
-            	    <td>".$data['message_to']."/".$db."</td>
+            	    <td>".$data['message_to']."/".$mdb."</td>
                 </tr>\n";
             }
 
-            echo "</tbody></table>\n";
-            echo "</div>\n";
-            echo "<div class='text-center'>".sprintf(self::$locale['PMC_085'], $db_to, $db_from)."</div>\n";
+            $txt .= "</tbody></table>\n";
+            $txt .= "</div>\n";
+            $txt .= "<div class='text-center'>".sprintf(self::$locale['PMC_085'], $db_to, $db_from)."</div>\n";
 
             if ($rows > $limit) {
-                echo "<div class='clearfix'>\n";
-                echo "<div class='pull-right'>".makepagenav($this->rowstart, $limit, $rows, 3, FUSION_SELF.$aidlink."&amp;section=pm_count&amp;")."</div>\n";
-                echo "</div>\n";
+                $txt .= "<div class='clearfix'>\n";
+                $txt .= "<div class='pull-right'>".makepagenav($this->rowstart, $limit, $rows, 3, FUSION_SELF.$aidlink."&amp;section=pm_count&amp;")."</div>\n";
+                $txt .= "</div>\n";
             }
 
         } else {
-            echo "<div class='text-center'>".self::$locale['PMC_105']."</div>\n";
+            $txt .= "<div class='text-center'>".self::$locale['PMC_105']."</div>\n";
         }
+        echo $txt;
     }
 }

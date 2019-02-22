@@ -3,14 +3,15 @@ $locale['PMC_000'] = "PM Control";
 $locale['PMC_001'] = "Private Messages Control";
 $locale['PMC_003'] = "PM Control";
 $locale['PMC_004'] = "Private messages";
+$locale['PMC_005'] = "PM Control";
 
 $locale['PMC_010'] = "New Private messages";
 $locale['PMC_011'] = "Sender";
 $locale['PMC_012'] = "Subject";
 $locale['PMC_013'] = "Message date";
 $locale['PMC_020'] = "Privát üzenetekhez";
-$locale['PMC_021'] = " üzenet törölve lett az adatbázisból, amit már ";
-$locale['PMC_022'] = " napja nem nyitottak meg olvasásra.";
+$locale['PMC_021'] = " messages have been deleted from the database already ";
+$locale['PMC_022'] = " days ago they didn't open for reading.";
 $locale['PMC_023'] = "Delete old messages";
 $locale['PMC_D00'] = "Click the subject of the message to read the message.";
 $locale['PMC_D01'] = "On our site, unread messages that are older than %s are deleted.";
