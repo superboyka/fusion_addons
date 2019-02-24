@@ -9,4 +9,5 @@
 <p>Profil:</p>
 <ul>
 <li><a href="https://github.com/karrak1/fusion_addons/tree/Fusion-9.03/nations">Felhasználó Országa</a></li>
+<li><a href="https://github.com/karrak1/fusion_addons/tree/Fusion-9.03/orientation">Szexuális Beállítottság</a></li>
 </ul>
