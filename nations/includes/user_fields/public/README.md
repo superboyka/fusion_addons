@@ -1,7 +1,7 @@
 # PHP-Fusion_Addons
 <h1>PHP-Fusion 9.03 verzió kompatibilis.</h1>
-Profil
----
+<p>Profil</p>
+
 <p>Felhasználó Országa Profil</p>
 <p>Az user_nations_include.php fájlban a $nation_set változó módosításával (0 = Csak Szöveg, 1 = Ikon + szöveg, 2 = Csak Ikon.</p>
 
