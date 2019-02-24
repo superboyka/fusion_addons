@@ -1,5 +1,5 @@
 # PHP-Fusion_Addons
-<h1>PHP-Fusion 9.03 verzió kompatibilis.</h1>
+<h1>PHP-Fusion 9.00 verzió kompatibilis.</h1>
 <p>Profil</p>
 
 <p>Csillagjegy Profil</p>
