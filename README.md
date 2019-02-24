@@ -5,3 +5,8 @@
 <li><a href="https://github.com/karrak1/fusion_addons/tree/Fusion-9.03/pm_control">PM Kontroll</a></li>
 <li><a href="https://github.com/karrak1/fusion_addons/tree/Fusion-9.03/welcome_pm">Üdvözlő Üzenet</a></li>
 </ul>
+---
+<p>Profil:</p>
+<ul>
+<li><a href="https://github.com/karrak1/fusion_addons/tree/Fusion-9.03/nations">PFelhasználó Országa</a></li>
+</ul>
