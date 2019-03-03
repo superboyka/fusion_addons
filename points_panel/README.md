@@ -53,6 +53,7 @@ Remove or Stop Ban:
 // 3 id user Stop Bann
 - \PHPFusion\Points\UserPoint::getInstance()->SetPointBan(3, ['ban_mod' => 2, 'ban_stop' => '1546423200']);<br />
 
+````
 $game = self::DisplayDate();
 ?>
     <script type="text/javascript">
@@ -60,3 +61,4 @@ $game = self::DisplayDate();
     </script>
 <?php
  "<b><div class='text-center' id='redseven'>00:00</div></b>\n";
+````
