@@ -17,6 +17,9 @@ add point
 - \PHPFusion\Points\UserPoint::getInstance()->setPoint("", ["mod" => 1, "point" => 200, "messages" => "message text"]);<br />
 // 3 id user increase 200 point<br />
 - \PHPFusion\Points\UserPoint::getInstance()->setPoint(3, ["mod" => 1, "point" => 200, "messages" => "message text"]);<br />
+//if the point does not multiply by a multiplier<br />
+//default hollyday multiplier<br />
+- \PHPFusion\Points\UserPoint::getInstance()->setPoint("", ["mod" => 1, "point" => 200, "messages" => "message text", 'hollyday'  => TRUE]);<br />
 
 remov point
 ---
@@ -53,8 +56,10 @@ Remove or Stop Ban:
 // 3 id user Stop Bann
 - \PHPFusion\Points\UserPoint::getInstance()->SetPointBan(3, ['ban_mod' => 2, 'ban_stop' => '1546423200']);<br />
 
+Time lock
+---
 ````
-$game = self::DisplayDate();
+$game = savetime - time();
 ?>
     <script type="text/javascript">
         display_cr(<?php echo $game ?>, "redseven", 3, "redseven.php");
