@@ -88,13 +88,7 @@ class PointsPlace extends PointsModel {
             LIMIT :rowstart, :limit", $bind);
         $inf = [];
         while ($data = dbarray($result)){
-            $inf[] = [
-                'point_id'   => $data['point_id'],
-                'point_user' => $data['point_user'],
-                'avatar'     => display_avatar($data, '50px', '', TRUE, 'img-rounded'),
-                'profile'    => profile_link($data['user_id'], $data['user_name'], $data['user_status']),
-                'point'      => number_format($data['point_point'])
-            ];
+            $inf[] = $data;
 	    }
 
         $info = [

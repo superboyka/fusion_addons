@@ -22,7 +22,7 @@ require_once THEMES."templates/admin_header.php";
 use \PHPFusion\BreadCrumbs;
 
 class PointsAdmin extends PointsModel {
-    private $allowed_section = ['diary', 'settings', 'pointst', 'bann', 'autogroup', 'bank'];
+    private $allowed_section = ['settings', 'autogroup', 'bank', 'diary', 'pointst', 'bann'];
 
     public function __construct() {
         pageAccess('PSP');
@@ -36,31 +36,27 @@ class PointsAdmin extends PointsModel {
         opentable(self::$locale['PSP_M00']);
 
     	$section = filter_input(INPUT_GET, 'section', FILTER_DEFAULT);
-        $section = isset($section) && in_array($section, $this->allowed_section) ? $section : 'settings';
+        $section = isset($section) && in_array($section, $this->allowed_section) ? $section : $this->allowed_section[0];
 
-        $tab['title'][] = self::$locale['PSP_M06'];
-        $tab['id'][]    = 'settings';
-        $tab['icon'][]  = 'fa fa-fw fa-cogs';
-
-        $tab['title'][] = self::$locale['PSP_M07'];
-        $tab['id'][]    = 'autogroup';
-        $tab['icon'][]  = 'fa fa-fw fa-group';
-
-        $tab['title'][] = self::$locale['PSP_M08'];
-        $tab['id'][]    = 'bank';
-        $tab['icon'][]  = 'fa fa-fw fa-cogs';
-
-        $tab['title'][] = self::$locale['PSP_M09'];
-        $tab['id'][]    = 'diary';
-        $tab['icon'][]  = 'fa fa-fw fa-book';
-
-        $tab['title'][] = self::$locale['PSP_M10'];
-        $tab['id'][]    = 'pointst';
-        $tab['icon'][]  = 'fa fa-fw fa-plus-circle';
-
-        $tab['title'][] = self::$locale['PSP_M11'];
-        $tab['id'][]    = 'bann';
-        $tab['icon'][]  = 'fa fa-fw fa-ban';
+        $tab = [
+            'title' => [
+                0 => self::$locale['PSP_M06'],
+                1 => self::$locale['PSP_M07'],
+                2 => self::$locale['PSP_M08'],
+                3 => self::$locale['PSP_M09'],
+                4 => self::$locale['PSP_M10'],
+                5 => self::$locale['PSP_M11']
+            ],
+            'id'    => $this->allowed_section,
+            'icon'  => [
+                0 => $this->points_icons[$this->allowed_section[0]],
+                1 => $this->points_icons[$this->allowed_section[1]],
+                2 => $this->points_icons[$this->allowed_section[2]],
+                3 => $this->points_icons[$this->allowed_section[3]],
+                4 => $this->points_icons[$this->allowed_section[4]],
+                5 => $this->points_icons[$this->allowed_section[5]]
+            ]
+        ];
 
         echo opentab($tab, $section, 'points_admin', TRUE, '', 'section', ['points_user', 'rowstart', 'log_pmod', 'bank', 'ref']);
         switch ($section) {

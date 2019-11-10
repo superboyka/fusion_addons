@@ -60,10 +60,11 @@ if (!function_exists('pointPanelItem')) {
 if (!function_exists('PlaceItem')) {
     function PlaceItem($info) {
         $html = \PHPFusion\Template::getInstance('place');
-        $html->set_template(POINT_CLASS.'templates/place.html');
+        $html->set_template(__DIR__.'/templates/place.html');
         $html->set_tag('opentable', fusion_get_function('opentable', $info['opentable']));
         $html->set_tag('closetable', fusion_get_function('closetable'));
-        $html->set_locale(fusion_get_locale());
+        $locale = fusion_get_locale();
+        $html->set_locale($locale);
 
         if (!empty($info['placefilter'])) {
             $html->set_block('pagenav_a', ['navigation' => $info['pagenav']]);
@@ -79,9 +80,9 @@ if (!function_exists('PlaceItem')) {
                 $html->set_block('items', [
                     'point_id' => $cdata['point_id'],
                     'place'    => \PHPFusion\Points\UserPoint::PointPlace(fusion_get_userdata('user_id')) != ($info['place'] + $pli) ? $info['place'] + $pli : "<span style='color:#FF0000'>".($info['place'] + $pli)."</span>",
-                    'avatar'   => $cdata['avatar'],
-                    'profile'  => $cdata['profile'],
-                    'point'    => $cdata['point']
+                    'avatar'   => display_avatar($cdata, '50px', '', TRUE, 'img-rounded'),
+                    'profile'  => profile_link($cdata['user_id'], $cdata['user_name'], $cdata['user_status']),
+                    'point'    => number_format($cdata['point_point'])
                 ]);
             }
         } else {
