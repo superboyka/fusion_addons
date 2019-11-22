@@ -4,7 +4,7 @@
 | Copyright (C) PHP-Fusion Inc
 | https://www.php-fusion.co.uk/
 +--------------------------------------------------------+
-| Filename: user_send_points_include.php
+| Filename: user_mood_include.php
 | Author: karrak
 +--------------------------------------------------------+
 | This program is released as free software under the

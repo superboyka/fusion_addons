@@ -35,11 +35,11 @@ class Mood {
     }
 
     public function StartMood() {
-    	$mood = filter_input(INPUT_POST, 'mood', FILTER_VALIDATE_INT);
-        if( iMEMBER && !empty( $mood) ) {
-            $ertek = form_sanitizer($mood, 0, 'mood');
-            if (\defender::safe()) {
-                dbquery( "UPDATE ".DB_USERS." SET user_mood = :mood WHERE user_id = :userid", [ ':mood' => (int)$ertek, ':userid' => fusion_get_userdata('user_id') ] );
+    	$postmood = filter_input(INPUT_POST, 'mood', FILTER_VALIDATE_INT);
+        if( iMEMBER && !empty( $postmood) ) {
+            $moodvalue = form_sanitizer( $postmood, 0, 'mood' );
+            if ( \defender::safe() ) {
+                dbquery( "UPDATE ".DB_USERS." SET user_mood = :mood WHERE user_id = :userid", [ ':mood' => (int)$moodvalue, ':userid' => fusion_get_userdata('user_id') ] );
                 addNotice( "success", self::$locale['MOOD_015'] );
                 redirect( FUSION_SELF );
             }
@@ -56,13 +56,13 @@ class Mood {
 
     private function MoodForm(){
     	$info = [
-    	    'openform'  => openform('moodform', 'post', FUSION_SELF, ['max_tokens' => 1]),
+    	    'openform'  => openform( 'moodform', 'post', FUSION_SELF, [ 'max_tokens' => 1 ] ),
     	    'closeform' => closeform(),
-    	    'select'    => form_select('mood', self::$locale['MOOD_011'], $this->mood, [
+    	    'select'    => form_select( 'mood', self::$locale['MOOD_011'], $this->mood, [
     	        'inner_width' => '100%',
     	        'options'     => self::$locale['MOOD_ARR'],
     	        'onchange'    => 'document.moodform.submit()'
-    	    ])
+    	    ] )
     	];
         return $info;
     }
