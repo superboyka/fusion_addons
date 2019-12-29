@@ -15,20 +15,19 @@
 | copyright header is strictly prohibited without
 | written permission from the original author(s).
 +--------------------------------------------------------*/
-if (!defined("IN_FUSION")) {
-    die("Access Denied");
-}
-//Show Admin icon
-\PHPFusion\Admins::getInstance()->setAdminPageIcons("WPM", "<i class='fa fa-commenting fa-lg'></i>");
+defined( 'IN_FUSION' ) || exit;
 
-if (!defined("DB_WELCOME_PM")) {
-	define("DB_WELCOME_PM", DB_PREFIX."welcome_pm");
+//Show Admin icon
+\PHPFusion\Admins::getInstance()->setAdminPageIcons( "WPM", "<i class='fa fa-commenting fa-lg'></i>" );
+
+if ( !defined( "DB_WELCOME_PM" ) ) {
+	define( "DB_WELCOME_PM", DB_PREFIX."welcome_pm" );
 }
 //load language file
-if (!defined("WPM_LOCALE")) {
-    if (file_exists(INFUSIONS."welcome_pm_panel/locale/".LOCALESET."welcom.php")) {
-        define("WPM_LOCALE", INFUSIONS."welcome_pm_panel/locale/".LOCALESET."welcom.php");
+if ( !defined( "WPM_LOCALE" ) ) {
+    if ( file_exists( INFUSIONS."welcome_pm_panel/locale/".LOCALESET."welcom.php" ) ) {
+        define( "WPM_LOCALE", INFUSIONS."welcome_pm_panel/locale/".LOCALESET."welcom.php" );
     } else {
-        define("WPM_LOCALE", INFUSIONS."welcome_pm_panel/locale/Hungarian/welcom.php");
+        define( "WPM_LOCALE", INFUSIONS."welcome_pm_panel/locale/Hungarian/welcom.php" );
     }
 }

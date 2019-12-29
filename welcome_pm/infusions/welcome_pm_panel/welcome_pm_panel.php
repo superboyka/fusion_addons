@@ -15,36 +15,34 @@
 | copyright header is strictly prohibited without
 | written permission from the original author(s).
 +--------------------------------------------------------*/
-if (!defined("IN_FUSION")) {
-    die("Access Denied");
-}
+defined( 'IN_FUSION' ) || exit;
 
-if (iMEMBER) {
+if ( iMEMBER ) {
 
-    if (defined('WELCOME_PM_PANEL_EXIST')) {
-        if (empty(fusion_get_userdata('user_welcome'))) {
+    if ( defined( 'WELCOME_PM_PANEL_EXIST' ) ) {
+        if ( empty( fusion_get_userdata( 'user_welcome' ) ) ) {
 
-            $locale = fusion_get_locale("", WPM_LOCALE);
-            $wpsettings = dbarray(dbquery("SELECT * FROM ".DB_WELCOME_PM.(multilang_table("WPM") ? " WHERE wp_language='".LANGUAGE."'" : '')." "));
+            $locale = fusion_get_locale( '', WPM_LOCALE );
+            $wpsettings = dbarray( dbquery( "SELECT * FROM ".DB_WELCOME_PM.( multilang_table("WPM") ? " WHERE ".in_group( 'wp_language', LANGUAGE ) : '' ) ) );
 
-            if ($wpsettings['wp_active'] == 1) {
+            if ( $wpsettings['wp_active'] == 1 ) {
 
 		        $sender_user_id = $wpsettings['wp_userid'];
 		        $subject = $locale['WPM_005'];
 		        $message = $locale['WPM_006'];
-		        send_pm(fusion_get_userdata('user_id'), $sender_user_id, $subject, $message);
+		        send_pm( fusion_get_userdata( 'user_id' ), $sender_user_id, $subject, $message );
 
-                dbquery("UPDATE ".DB_USERS." SET user_welcome='1' WHERE user_id='".fusion_get_userdata('user_id')."'");
+                dbquery( "UPDATE ".DB_USERS." SET user_welcome = '1' WHERE user_id = '".fusion_get_userdata( 'user_id' )."'" );
             }
 
-            if ($wpsettings['wp_sbox'] == 1 && defined('SHOUTBOX_PANEL_EXIST')) {
+            if ( $wpsettings['wp_sbox'] == 1 && defined( 'SHOUTBOX_PANEL_EXIST' ) ) {
                 $message = str_replace(
-                    ["[USERNAME]"],
-                    [fusion_get_userdata('user_name')],
+                    [ "[USERNAME]" ],
+                    [ fusion_get_userdata( 'user_name' ) ],
                     $locale['WPM_007']
                 );
 
-                dbquery("INSERT INTO ".DB_SHOUTBOX." (shout_name, shout_message, shout_datestamp, shout_language) VALUES ('".$locale['WPM_014']."', '".$message."', '".time()."', '".LANGUAGE."')");
+                dbquery( "INSERT INTO ".DB_SHOUTBOX." (shout_name, shout_message, shout_datestamp, shout_language) VALUES ('".$locale['WPM_014']."', '".$message."', '".time()."', '".LANGUAGE."')" );
             }
         }
     }
