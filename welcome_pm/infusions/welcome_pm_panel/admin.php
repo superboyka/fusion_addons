@@ -26,7 +26,6 @@ $welcpmsettings = dbarray( dbquery( "SELECT * FROM ".DB_WELCOME_PM.( multilang_t
 \PHPFusion\BreadCrumbs::getInstance()->addBreadCrumb( [ 'link' => INFUSIONS."welcome_pm_panel/admin.php".fusion_get_aidlink(), 'title' => $locale['WPM_000'] ] );
 add_to_title( $locale['WPM_000'] );
 
-$savesettings = filter_input(INPUT_POST, 'savesettings', FILTER_DEFAULT);
 if ( post( 'savesettings' ) ) {
 
     $welcpmsettings = [
