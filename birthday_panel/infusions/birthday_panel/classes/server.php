@@ -67,7 +67,7 @@ abstract class BdayServer {
             $condition .= " || day = '".$tomorrow."'";
         }
 
-        $result = dbquery( "SELECT day, name FROM ".DB_BDAY." WHERE ".( multilang_table( "BDY" ) ? in_group( 'language', LANGUAGE ) : '' )." AND (".$condition.")" );
+        $result = dbquery( "SELECT day, name FROM ".DB_BDAY." WHERE ".( multilang_table( "BDY" ) ? in_group( 'language', LANGUAGE )." AND "  : '' )."(".$condition.")" );
         $info = [];
         while ( $dat = dbarray( $result ) ) {
             $key = $dat['day'] == date( "m-d" ) ? "day" : "tomorow";
