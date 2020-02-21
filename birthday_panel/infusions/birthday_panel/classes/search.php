@@ -23,8 +23,6 @@ class Bdaysearch extends BdayServer {
 
     public function __construct() {
         parent::__construct();
-        //require_once BDAY_PATH."templates.php";
-        //self::$locale = fusion_get_locale( "", BDAY_LOCALE );
         add_to_title( self::$locale['global_200'].self::$locale['BDAY_040'] );
     }
 
@@ -40,7 +38,7 @@ class Bdaysearch extends BdayServer {
             $fname = sanitizer( 'sname', '', 'sname' );
 
             if ( fusion_safe() ) {
-                $result = dbquery( "SELECT day, name FROM ".DB_BDAY." WHERE name LIKE '".$fname."'".( multilang_table( "BDY" ) ? " AND ".in_group( 'language', LANGUAGE ) : '' )."" );
+                $result = dbquery( "SELECT day, name FROM ".DB_BDAY." WHERE ".( multilang_table( "BDY" ) ? in_group( 'language', LANGUAGE )."AND" : '' )." name LIKE '$fname'" );
                 $infom = [
                     'ncount' => dbrows( $result ),
                     'name'   => $fname
