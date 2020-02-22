@@ -23,8 +23,6 @@ class bdaypanel extends BdayServer {
 
     public function __construct() {
         parent::__construct();
-        //require_once BDAY_PATH."templates.php";
-        //self::$locale = fusion_get_locale( "", BDAY_LOCALE );
         $this->settings = self::CurrentSetup();
     }
 
@@ -42,7 +40,7 @@ class bdaypanel extends BdayServer {
         $info = [
             'openside'    => "<i class='fa fa-gift fa-lg m-r-10'></i>".self::$locale['BDAY_010'],
             'searchlink'  => $this->settings['search'] ? BDAY_PATH.'search.php' : '',
-            'daymsg'      => date( "Y" ).". ".$month[date( "n" )]." ".date( "j" ).", ".$day[date( "w" )],
+            'daymsg'      => showdate( self::$locale['BDAY_today'], time() ),
             'nameday'     => self::Nameday( $this->settings['nameday'] ), //0 = disabled, 1 = day nameday, 2 = day and tomorrow nameday
             'birthdate'   => iMEMBER ? self::Birthdate( $this->settings['birthday'], $this->settings['age'] ) : '',
             'usernameday' => iMEMBER ? self::UserNameday( $this->settings['usernameday'] ) : '',

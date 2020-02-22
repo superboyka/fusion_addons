@@ -1,5 +1,6 @@
 <?php
 $locale['BDAY_day'] = "%B %d";
+$locale['BDAY_today'] = "%d. %B %Y. %A";
 $locale['BDAY_000'] = "Birthdays - name-days Info System";
 $locale['BDAY_001'] = "Show Birthdays, name-days and name-day search";
 $locale['BDAY_002'] = "Birthdays Info System";
@@ -43,5 +44,5 @@ $locale['BDAY_070'] = "Zodiac image";
 $locale['BDAY_071'] = "Display the time of day:";
 $locale['BDAY_072'] = [ "Text", "Image" ];
 
-$locale['ZODIAK'] = ["Vízöntõ", "Halak", "Kos", "Bika", "Ikrek", "Rák", "Oroszlán", "Szûz", "Mérleg", "Skorpió", "Nyilas", "Bak"];
+$locale['zodiac'] = ["Vízöntõ", "Halak", "Kos", "Bika", "Ikrek", "Rák", "Oroszlán", "Szûz", "Mérleg", "Skorpió", "Nyilas", "Bak"];
 

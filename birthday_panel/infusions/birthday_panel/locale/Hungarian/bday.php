@@ -1,5 +1,6 @@
 <?php
 $locale['BDAY_day'] = "%B %d";
+$locale['BDAY_today'] = "%Y. %B %d. %A";
 $locale['BDAY_000'] = "Születésnap - Névnap Infó Rendszer";
 $locale['BDAY_001'] = "Születésnapot, névnapot jelenít meg, névnap keresővel";
 $locale['BDAY_002'] = "Születésnap Infó Rendszer";
