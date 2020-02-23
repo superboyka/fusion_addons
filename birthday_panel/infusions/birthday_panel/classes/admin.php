@@ -68,7 +68,7 @@ class Bdayadmin extends BdayServer {
         	    'zodiakimg'   => sanitizer( 'zodiakimg', '1', 'zodiakimg' ),
         	    'nameimg'     => sanitizer( 'nameimg', '', 'nameimg' ),
         	    'birthimg'    => sanitizer( 'birthimg', '', 'birthimg' ),
-        	    'napszak'     => sanitizer( 'napszak', 0, 'napszak')
+        	    'napszak'     => sanitizer( 'napszak', '0', 'napszak')
         	];
 
             if ( fusion_safe() ) {
@@ -152,7 +152,7 @@ class Bdayadmin extends BdayServer {
         ] );
 
         echo form_select('napszak', self::$locale['BDAY_071'], $this->settings['napszak'], [
-            'options'     => [ '1' => self::$locale['BDAY_072'][1], '0' => self::$locale['BDAY_072'][0] ],
+            'options'     => [ '2' => self::$locale['BDAY_072'][2], '1' => self::$locale['BDAY_072'][1], '0' => self::$locale['BDAY_072'][0] ],
             'placeholder' => self::$locale['choose'],
             'width'       => '100%',
             'inline'      => TRUE

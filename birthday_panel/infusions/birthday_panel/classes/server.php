@@ -46,8 +46,8 @@ abstract class BdayServer {
             "<div class='col-sm-2 col-md-6 text-center'><img src='".BDAY_PATH."images/sunrise.png' alt='Budapesten' title='Budapesten'><p>".$tnapkelte."</p></div>\n".
             "<div class='col-sm-2 col-md-6 text-center'><img src='".BDAY_PATH."images/sunset.png' alt='Budapesten' title='Budapesten'><p>".$tnapnyugta."</p></div>\n</div>\n"
             :
-            "<div class='m-t-5 text-left' title='Budapesten'>".sprintf( self::$locale['BDAY_022'], $tnapkelte )."</div>
-            <div class='m-t-5 text-left' title='Budapesten'>".sprintf( self::$locale['BDAY_023'], $tnapnyugta )."</div>";
+            "<div class='row'><div class='m-t-5 text-left' title='Budapesten'>".sprintf( self::$locale['BDAY_022'], $tnapkelte )."</div>
+            <div class='m-t-5 text-left' title='Budapesten'>".sprintf( self::$locale['BDAY_023'], $tnapnyugta )."</div></div>";
         return $napszak;
     }
 

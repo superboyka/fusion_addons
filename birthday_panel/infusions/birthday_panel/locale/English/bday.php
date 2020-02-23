@@ -7,9 +7,9 @@ $locale['BDAY_002'] = "Birthdays Info System";
 $locale['BDAY_010'] = "Celebrated";
 $locale['BDAY_011'] = "Name-day search";
 $locale['BDAY_012'] = "<p>Ma</p>";
-$locale['BDAY_013'] = "napja van.";
-$locale['BDAY_014'] = "<p>Holnap</p>";
-$locale['BDAY_015'] = "napja lesz.";
+$locale['BDAY_013'] = "<p>Today's name day.</p>";
+$locale['BDAY_014'] = "<p>Tomorrow's name day</p>";
+//$locale['BDAY_015'] = "napja lesz.";
 $locale['BDAY_016'] = "<p>Birthdays</p>";
 $locale['BDAY_017'] = "<p>Tomorrow's Birthdays</p>";
 $locale['BDAY_018'] = "<p>name-day</p>";
@@ -42,7 +42,7 @@ $locale['BDAY_068'] = "Birthdays image";
 $locale['BDAY_069'] = "Show Zodiac";
 $locale['BDAY_070'] = "Zodiac image";
 $locale['BDAY_071'] = "Display the time of day:";
-$locale['BDAY_072'] = [ "Text", "Image" ];
+$locale['BDAY_072'] = [ "Off", "Image", "Text" ];
 
 $locale['zodiac'] = ["Vízöntõ", "Halak", "Kos", "Bika", "Ikrek", "Rák", "Oroszlán", "Szûz", "Mérleg", "Skorpió", "Nyilas", "Bak"];
 
