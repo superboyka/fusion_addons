@@ -22,7 +22,7 @@ $locale = fusion_get_locale( "", BDAY_LOCALE );
 
 $inf_title = $locale['BDAY_000'];
 $inf_description = $locale['BDAY_001'];
-$inf_version = "1.0";
+$inf_version = "1.1";
 $inf_developer = "karrak";
 $inf_email = "admin@fusionjatek.hu";
 $inf_weburl = "https://fusionhu.com";
@@ -56,9 +56,12 @@ $inf_newtable[] = DB_BDAY_ST." (
 	usernameday   TINYINT(1)             NOT NULL DEFAULT '2',
 	nevinfo       TINYINT(1)             NOT NULL DEFAULT '0',
 	zodiakimg     TINYINT(1)             NOT NULL DEFAULT '1',
-	napszak       ENUM('0','1')          NOT NULL DEFAULT '1',
+	napszak       TINYINT(1)             NOT NULL DEFAULT '1',
 	nameimg       VARCHAR(100)           NOT NULL DEFAULT '',
 	birthimg      VARCHAR(100)           NOT NULL DEFAULT '',
+	latitude      VARCHAR(100)           NOT NULL DEFAULT '47.1048',
+	longitude     VARCHAR(100)           NOT NULL DEFAULT '19.3013',
+	timezone      VARCHAR(100)           NOT NULL DEFAULT 'Europe/Budapest',
 	PRIMARY KEY nsid (nsid)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 COLLATE=utf8_unicode_ci";
 

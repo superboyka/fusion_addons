@@ -35,16 +35,16 @@ abstract class BdayServer {
     }
 
     public function MorningEevening() {
-        $nsztime = new \DateTime('now', new \DateTimeZone('Europe/Budapest'));
-        $tlat = 47.1048;
-        $tlong = 19.3013;
+        $nsztime = new \DateTime('now', new \DateTimeZone($this->settings['timezone']));
+        $tlat = $this->settings['latitude']; //47.1048;
+        $tlong = $this->settings['longitude']; //19.3013;
         $tzenith = 90+50/60;
         $tnapkelte = date_sunrise( $nsztime->getTimestamp(), SUNFUNCS_RET_STRING, $tlat, $tlong, $tzenith, $nsztime->getOffset() / 3600 );
         $tnapnyugta = date_sunset( $nsztime->getTimestamp(), SUNFUNCS_RET_STRING, $tlat, $tlong, $tzenith, $nsztime->getOffset() / 3600 );
         $napszak = $this->settings['napszak'] == 1 ?
             "<div class='row'>\n".
-            "<div class='col-sm-2 col-md-6 text-center'><img src='".BDAY_PATH."images/sunrise.png' alt='Budapesten' title='Budapesten'><p>".$tnapkelte."</p></div>\n".
-            "<div class='col-sm-2 col-md-6 text-center'><img src='".BDAY_PATH."images/sunset.png' alt='Budapesten' title='Budapesten'><p>".$tnapnyugta."</p></div>\n</div>\n"
+            "<div class='col-sm-2 col-md-6 text-center'><img src='".BDAY_PATH."images/sunrise.png' title='Budapesten'><p>".$tnapkelte."</p></div>\n".
+            "<div class='col-sm-2 col-md-6 text-center'><img src='".BDAY_PATH."images/sunset.png' title='Budapesten'><p>".$tnapnyugta."</p></div>\n</div>\n"
             :
             "<div class='row'><div class='m-t-5 text-left' title='Budapesten'>".sprintf( self::$locale['BDAY_022'], $tnapkelte )."</div>
             <div class='m-t-5 text-left' title='Budapesten'>".sprintf( self::$locale['BDAY_023'], $tnapnyugta )."</div></div>";
