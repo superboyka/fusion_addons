@@ -70,7 +70,7 @@ $ba_mk = mktime(0, 0, 0, date("m"), date("d")-1, date("Y"));
 $inf_insertdbrow[] = DB_PANELS." (panel_name, panel_filename, panel_content, panel_side, panel_order, panel_type, panel_access, panel_display, panel_status, panel_url_list, panel_restriction, panel_languages) VALUES('".$inf_title."', '".$inf_folder."', '', '1', '3', 'file', '0', '1', '1', '', '3', '".fusion_get_settings( 'enabled_languages' )."')";
 
 $inf_insertdbrow[] = DB_BDAY_ST." VALUES
-('1', '".$ba_mk."', '".$ba_mk."', '1', '1', '1', '1', '2', '2', '2', '0', '1', '0', '".fusion_get_settings( 'siteurl' )."infusions/".$inf_folder."/images/csomag.png', '".fusion_get_settings( 'siteurl' )."infusions/".$inf_folder."/images/birthday.png')";
+('1', '".$ba_mk."', '".$ba_mk."', '1', '1', '1', '1', '2', '2', '2', '0', '1', '0', '".fusion_get_settings( 'siteurl' )."infusions/".$inf_folder."/images/csomag.png', '".fusion_get_settings( 'siteurl' )."infusions/".$inf_folder."/images/birthday.png', '47.1048', '19.3013', 'Europe/Budapest')";
 
 $enabled_languages = makefilelist(LOCALE, ".|..", TRUE, "folders");
 if (!empty($enabled_languages)) {
