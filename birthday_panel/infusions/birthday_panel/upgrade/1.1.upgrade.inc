@@ -25,7 +25,7 @@ if (column_exists(DB_BDAY_ST, 'napszak', FALSE)) {
 $check_array = [
     'latitude'  => " ADD latitude VARCHAR(100) NOT NULL DEFAULT '47.1048' AFTER birthimg",
     'longitude' => " ADD longitude VARCHAR(100) NOT NULL DEFAULT '19.3013' AFTER latitude",
-    'timezone'  => " ADD zenith VARCHAR(100) NOT NULL DEFAULT 'Europe/Budapest' AFTER longitude"
+    'timezone'  => " ADD timezone VARCHAR(100) NOT NULL DEFAULT 'Europe/Budapest' AFTER longitude"
 ];
 
 foreach ($check_array as $key => $value) {
