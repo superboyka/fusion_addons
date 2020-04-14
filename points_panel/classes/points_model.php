@@ -19,15 +19,15 @@ namespace PHPFusion\Points;
 
 class PointsModel {
     protected static $locale = [];
-    protected $points_icons = [
-        'settings'   => 'fa fa-fw fa-cogs',
-        'autogroup' => 'fa fa-fw fa-group',
-        'bank'    => 'fa fa-fw fa-cogs',
-        'diary'    => 'fa fa-fw fa-book',
-        'pointst'    => 'fa fa-fw fa-plus-circle',
-        'bann'    => 'fa fa-fw fa-ban'
-    ];
 
+    protected $points_icons = [
+        'settings'  => 'fa fa-fw fa-cogs',
+        'autogroup' => 'fa fa-fw fa-group',
+        'bank'      => 'fa fa-fw fa-cogs',
+        'diary'     => 'fa fa-fw fa-book',
+        'pointst'   => 'fa fa-fw fa-plus-circle',
+        'bann'      => 'fa fa-fw fa-ban'
+    ];
     /*protected $bank = [
         'pb_id' => '',
         'pb_user_id' => 0,

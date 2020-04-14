@@ -197,7 +197,7 @@ class UserPoint extends PointsModel {
             ':point'    => self::PointInfo($user, 0)
         ];
         if (!self::PointBan($user)) {
-            $place = dbcount("(*)+1", DB_POINT, "point_point>:point".(multilang_table("PSP") ? " AND point_language = '".LANGUAGE."'" : '')."", $bind);
+            $place = dbcount("(*)+1", DB_POINT, "point_point>:point".(multilang_table("PSP") ? " AND ".in_group('point_language', LANGUAGE) : "")."", $bind);
             return $place;
         }
         return FALSE;
@@ -208,7 +208,7 @@ class UserPoint extends PointsModel {
         $result = dbquery("SELECT point_point
             FROM ".DB_POINT."
             WHERE point_user = :userid
-            ".(multilang_table("PSP") ? " AND point_language = '".LANGUAGE."'" : '')."
+            ".(multilang_table("PSP") ? " AND ".in_group('point_language', LANGUAGE) : "")."
             LIMIT 0,1", [':userid' => $user]
         );
 
@@ -317,7 +317,7 @@ class UserPoint extends PointsModel {
 
         $result = dbquery("SELECT *
             FROM ".DB_POINT_INF."
-            WHERE ".(multilang_table("PSP") ? "pi_language = '".LANGUAGE."' AND " : '')."
+            WHERE ".(multilang_table("PSP") ? in_group('pi_language', LANGUAGE).' AND ' : "")."
             (pi_user_id = '0' AND pi_user_access >= :level) OR
             (pi_user_id = :userId AND pi_user_access >= :level1)
             ORDER BY pi_user_id ASC, pi_title ASC", $bind);

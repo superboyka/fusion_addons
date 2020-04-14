@@ -65,21 +65,17 @@ class PointsBanAdmin extends PointsModel {
 
 	private function Currentdata($condition = FALSE) {
 		$sql_condition = empty($condition) ? "(ban_time_start<='".time()."' AND ban_time_stop>='".time()."') || (ban_time_start<='".time()."' AND ban_time_stop='0')" : "ban_time_stop!=0";
-        $max_rows = dbcount("(ban_id)", DB_POINT_BAN, $sql_condition.(multilang_table("PSP") ? " AND ban_language='".LANGUAGE."'" : ''));
+        $max_rows = dbcount("(ban_id)", DB_POINT_BAN, $sql_condition.(multilang_table("PSP") ? ' AND '.in_group('ban_language', LANGUAGE) : ""));
 		$rwstart = empty($condition) ? "banstart" : "defstart";
         $rowstart = filter_input(INPUT_GET, $rwstart, FILTER_DEFAULT);
         $rowstart = (!empty($rowstart) && isnum($rowstart) && $rowstart <= $max_rows) ? $rowstart : 0;
 
-        $bind = [
-            ':rowstart' => $rowstart,
-            ':limit'    => $this->settings['ps_page']
-        ];
 	    $result = dbquery("SELECT pbu.*, pb.*
 	        FROM ".DB_POINT_BAN." AS pb
 	        LEFT JOIN ".DB_USERS." AS pbu ON pbu.user_id = pb.ban_user_id
 	        WHERE $sql_condition
-            ".(multilang_table("PSP") ? " AND pb.ban_language = '".LANGUAGE."'" : "")."
-            LIMIT :rowstart, :limit", $bind);
+            ".(multilang_table("PSP") ? ' AND '.in_group('pb.ban_language', LANGUAGE) : "")."
+            LIMIT ".$rowstart.", ".$this->settings['ps_page']." ");
         $inf = [];
 
         while ($data = dbarray($result)){

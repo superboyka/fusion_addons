@@ -72,20 +72,15 @@ class PointsPlace extends PointsModel {
 
         set_title(self::$locale['PSP_P00']);
         $rowstart = filter_input(INPUT_GET, 'rowstart', FILTER_VALIDATE_INT);
-        $max_rows = dbcount("(point_id)", DB_POINT, (multilang_table("PSP") ? "point_language='".LANGUAGE."'" : ''));
+        $max_rows = dbcount("(point_id)", DB_POINT, (multilang_table("PSP") ? in_group('point_language', LANGUAGE) : ""));
         $rowstart = (!empty($rowstart) && isnum($rowstart) && $rowstart <= $max_rows) ? $rowstart : 0;
-
-        $bind = [
-            ':rowstart' => $rowstart,
-            ':limit'    => $this->settings['ps_page']
-        ];
 
         $result = dbquery("SELECT p.*, pu.user_id, pu.user_name, pu.user_status, pu.user_avatar, pu.user_joined, pu.user_level
             FROM ".DB_POINT." AS p
             LEFT JOIN ".DB_USERS." AS pu ON pu.user_id = p.point_user
-            ".(multilang_table("PSP") ? "WHERE p.point_language = '".LANGUAGE."'" : "")."
+            ".(multilang_table("PSP") ? "WHERE ".in_group('p.point_language', LANGUAGE) : "")."
             ORDER BY ".self::checkPlaceFilter()."
-            LIMIT :rowstart, :limit", $bind);
+            LIMIT ".$rowstart.", ".$this->settings['ps_page']." ");
         $inf = [];
         while ($data = dbarray($result)){
             $inf[] = $data;
